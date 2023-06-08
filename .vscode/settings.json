@@ -1,0 +1,7 @@
+{
+    "dotnet.defaultSolution": "src/aspnet-microservice.sln",
+    "dotnetAcquisitionExtension.existingDotnetPath": [
+
+    ],
+    "omnisharp.sdkPath": "/usr/lib/dotnet/sdk/7.0.105/"
+}

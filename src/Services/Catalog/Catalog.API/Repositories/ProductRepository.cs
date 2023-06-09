@@ -33,33 +33,50 @@ namespace Catalog.API.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        // public Task CreateProduct(Product product)
-        // {
-        //     throw new NotImplementedException();
-        // }
+        public async Task<IEnumerable<Product>> GetProductByName(string categoryName)
+        {
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Eq(p => p.Category, categoryName);
 
-        // public Task<bool> DeleteProduct(string id)
-        // {
-        //     throw new NotImplementedException();
-        // }
+            return await _context
+               .Products
+               .Find(filter)
+               .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductByCategory(string categoryName)
+        {
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Eq(p => p.Category, categoryName);
+
+            return await _context
+              .Products
+              .Find(filter)
+              .ToListAsync();
+        }
+
+        public async Task CreateProduct(Product product)
+        {
+            await _context.Products.InsertOneAsync(product);
+        }
+
+        public async Task<bool> DeleteProduct(string id)
+        {
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Eq(p => p.Id, id);
+
+            DeleteResult deleteResult = await _context
+                .Products
+                .DeleteOneAsync(filter);
+
+            return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
+        }
 
 
+        public async Task<bool> UpdateProduct(Product product)
+        {
+            var updateResult = await _context
+                .Products
+                .ReplaceOneAsync(p => p.Id == product.Id, product);
 
-        // public Task<IEnumerable<Product>> GetProductByCategory(string categoryName)
-        // {
-        //     throw new NotImplementedException();
-        // }
-
-        // public Task<IEnumerable<Product>> GetProductByName(string name)
-        // {
-        //     throw new NotImplementedException();
-        // }
-
-
-
-        // public Task<bool> UpdateProduct(Product product)
-        // {
-        //     throw new NotImplementedException();
-        // }
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
     }
 }

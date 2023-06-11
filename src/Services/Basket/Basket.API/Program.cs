@@ -1,13 +1,17 @@
 using Basket.API.Repository;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Configuration;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigurationManager configuration = builder.Configuration;
+
 // Access the configuration
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(builder.Environment.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: true)
-    .Build();
+// var configuration = new ConfigurationBuilder()
+//     .SetBasePath(builder.Environment.ContentRootPath)
+//     .AddJsonFile("appsettings.json", optional: true)
+//     .Build();
 
 // Add services to the container.
 
@@ -16,10 +20,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure Redis cache
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    // options.Configuration = configuration.GetValue<string>("CacheSettings:ConnectionString");
-    options.Configuration = "localhost:6379";
+
+    options.Configuration = configuration.GetValue<string>("CacheSettings:ConnectionString");
+    // options.Configuration = "localhost:6379";
 
 });
 
